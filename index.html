@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>¡100 Valentinas Dicen! - Especial Cumpleaños 🎂💖</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Pacifico&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #feada6 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .font-cursive {
+            font-family: 'Pacifico', cursive;
+        }
+
+        .font-game {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* Pulsing Glow Animations */
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(244, 114, 182, 0.6), 0 0 30px rgba(244, 114, 182, 0.4); }
+            50% { box-shadow: 0 0 25px rgba(236, 72, 153, 0.9), 0 0 45px rgba(236, 72, 153, 0.7); }
+        }
+
+        .glow-box {
+            animation: glow 3s infinite ease-in-out;
+        }
+
+        @keyframes bounce-slow {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .bounce-element {
+            animation: bounce-slow 2.5s infinite;
+        }
+
+        /* Floating background hearts canvas overlay */
+        #hearts-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Custom Glassmorphism Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.88);
+            backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.6);
+        }
+
+        /* Flame animation for Virtual Cake */
+        @keyframes flicker {
+            0%, 100% { transform: scale(1) rotate(-2deg); opacity: 0.9; }
+            50% { transform: scale(1.15) rotate(2deg); opacity: 1; filter: drop-shadow(0 0 8px #f59e0b); }
+        }
+
+        .candle-flame {
+            animation: flicker 0.6s infinite ease-in-out;
+            transform-origin: center bottom;
+        }
+
+        .candle-flame.extinguished {
+            display: none;
+        }
+
+        /* Interactive Choice Card Hover */
+        .choice-btn {
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .choice-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+        }
+        .choice-btn:active {
+            transform: translateY(1px) scale(0.98);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-between p-3 sm:p-6 text-gray-800 relative min-h-screen">
+
+    <!-- Background Canvas for Floating Hearts -->
+    <canvas id="hearts-canvas"></canvas>
+
+    <!-- Top Game Show Navigation / Audio Control -->
+    <header class="w-full max-w-3xl flex justify-between items-center z-10 mb-4 px-2">
+        <div class="flex items-center space-x-2 bg-white/80 backdrop-blur-md px-4 py-2 rounded-full shadow-md">
+            <i class="fa-solid fa-trophy text-yellow-500 text-lg"></i>
+            <span class="font-bold text-pink-600 font-game text-sm sm:text-base">Valentina's Birthday Show</span>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button id="sound-toggle" onclick="toggleAudio()" class="bg-white/80 hover:bg-white text-pink-600 p-2.5 rounded-full shadow-md transition-all duration-200 hover:scale-110" title="Activar/Desactivar Sonido">
+                <i id="sound-icon" class="fa-solid fa-volume-high text-lg"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="w-full max-w-2xl z-10 flex-grow flex flex-col justify-center my-auto">
+
+        <!-- SCREEN 1: WELCOME INTRO -->
+        <section id="screen-welcome" class="glass-card rounded-3xl p-6 sm:p-10 shadow-2xl text-center glow-box transition-all duration-500">
+            <div class="inline-block p-4 bg-pink-100 rounded-full mb-4 bounce-element shadow-inner">
+                <i class="fa-solid fa-crown text-5xl text-pink-500"></i>
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-pink-600 font-game tracking-wide mb-2">
+                ¡El Desafío del Amor!
+            </h1>
+            <p class="text-xl sm:text-2xl font-cursive text-purple-600 mb-6">
+                Especial Cumpleaños de Valentina 🎂✨
+            </p>
+
+            <div class="bg-pink-50/80 rounded-2xl p-4 sm:p-5 mb-8 text-left border border-pink-200 text-sm sm:text-base leading-relaxed text-gray-700 shadow-sm">
+                <p class="font-semibold text-pink-700 mb-2 text-center text-lg">
+                    <i class="fa-solid fa-heart mr-1"></i> Reglas del Programa:
+                </p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Demuestra qué tan bien conoces nuestra hermosa historia de amor.</li>
+                    <li>Hay <strong>5 preguntas exclusivas</strong> creadas para ti.</li>
+                    <li>Por cada respuesta correcta acumularás <strong>Puntos de Amor</strong> y <strong>Premios Especiales</strong>.</li>
+                    <li>¡Al completar el juego desbloquearás tu <strong>Gran Sorpresa de Cumpleaños</strong>! 🎁</li>
+                </ul>
+            </div>
+
+            <button onclick="startGame()" class="w-full py-4 px-8 bg-gradient-to-r from-pink-500 via-red-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-game text-xl sm:text-2xl rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl active:translate-y-0 flex items-center justify-center space-x-3">
+                <span>¡COMENZAR EL JUEGO!</span>
+                <i class="fa-solid fa-sparkles text-yellow-300"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 2: GAME TRIVIA QUESTION -->
+        <section id="screen-quiz" class="hidden glass-card rounded-3xl p-6 sm:p-8 shadow-2xl transition-all duration-500">
+            <!-- Header Bar inside Game -->
+            <div class="flex flex-wrap justify-between items-center gap-2 mb-6 pb-4 border-b border-pink-200">
+                <div class="flex items-center space-x-2">
+                    <span id="question-badge" class="bg-pink-500 text-white font-game px-3 py-1 rounded-full text-xs sm:text-sm shadow">
+                        Pregunta 1 de 5
+                    </span>
+                    <span id="hearts-indicator" class="text-pink-500 text-sm font-semibold">
+                        <i class="fa-solid fa-heart"></i>
+                        <i class="fa-solid fa-heart"></i>
+                        <i class="fa-solid fa-heart"></i>
+                    </span>
+                </div>
+                <div class="bg-yellow-100 border border-yellow-300 text-yellow-800 font-game px-3 py-1 rounded-xl text-sm flex items-center space-x-1 shadow-sm">
+                    <i class="fa-solid fa-star text-yellow-500"></i>
+                    <span>Puntos: <strong id="score-counter">0</strong></span>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6 overflow-hidden">
+                <div id="progress-bar" class="bg-gradient-to-r from-pink-400 to-purple-600 h-2.5 rounded-full transition-all duration-500" style="width: 20%"></div>
+            </div>
+
+            <!-- Question Title -->
+            <div class="text-center mb-6">
+                <span class="text-xs font-bold text-purple-500 uppercase tracking-widest font-game">Cuestionario Romántico</span>
+                <h2 id="question-text" class="text-xl sm:text-2xl font-bold text-gray-800 mt-1 leading-snug">
+                    <!-- Dynamic Question Text -->
+                </h2>
+            </div>
+
+            <!-- Options Container -->
+            <div id="options-container" class="grid grid-cols-1 gap-3 sm:gap-4 mb-6">
+                <!-- Dynamic Options Populated by JS -->
+            </div>
+
+            <!-- Hint / Fun Presenter Comment -->
+            <div id="quiz-feedback" class="min-h-[50px] p-3 rounded-xl text-center text-sm font-semibold transition-all duration-300 hidden">
+                <!-- Dynamic Feedback message -->
+            </div>
+
+            <!-- Next Question Button Container -->
+            <div id="next-btn-container" class="mt-5 hidden flex justify-center">
+                <button id="next-question-btn" onclick="goToNextQuestion()" class="w-full sm:w-auto py-3.5 px-8 bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-600 hover:from-pink-600 hover:to-indigo-700 text-white font-game text-base rounded-2xl shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center space-x-2">
+                    <span id="next-btn-text">Siguiente Pregunta</span>
+                    <i id="next-btn-icon" class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: GRAND PRIZE & BIRTHDAY CELEBRATION -->
+        <section id="screen-prize" class="hidden glass-card rounded-3xl p-6 sm:p-10 shadow-2xl text-center transition-all duration-500">
+            <div class="inline-block px-4 py-1 bg-yellow-300 text-yellow-900 rounded-full text-xs sm:text-sm font-bold font-game uppercase tracking-widest mb-3 shadow">
+                🎉 ¡Nivel Final Completado! 🎉
+            </div>
+            
+            <h1 class="text-3xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-purple-600 to-red-500 font-game mb-2">
+                ¡FELIZ CUMPLE VALENTINA!
+            </h1>
+            
+            <p class="text-lg sm:text-xl text-pink-600 font-cursive mb-10 sm:mb-12">
+                ¡Ganaste el puntaje máximo y mi corazón entero! ❤️
+            </p>
+
+            <!-- VIRTUAL INTERACTIVE CAKE -->
+            <div class="relative w-48 sm:w-60 h-48 sm:h-56 mx-auto mt-14 sm:mt-16 mb-6 flex flex-col items-center justify-end group cursor-pointer" onclick="blowCandles()" title="¡Haz clic para soplar las velas!">
+                <!-- Candle Hint Popup Container (Centered) -->
+                <div class="absolute -top-12 inset-x-0 flex justify-center z-20 pointer-events-none">
+                    <div id="candle-hint" class="bg-pink-600 text-white text-xs sm:text-sm font-bold px-4 py-1.5 rounded-full shadow-lg animate-bounce whitespace-nowrap">
+                        ✨ ¡Haz clic aquí para soplar las velas! ✨
+                    </div>
+                </div>
+
+                <!-- Candles Container -->
+                <div class="flex space-x-4 mb-1 z-10">
+                    <!-- Candle 1 -->
+                    <div class="flex flex-col items-center">
+                        <div class="candle-flame w-3 h-5 bg-gradient-to-t from-yellow-500 via-orange-400 to-yellow-200 rounded-full shadow-md"></div>
+                        <div class="w-2.5 h-10 bg-gradient-to-r from-pink-300 to-pink-400 rounded-t-sm shadow"></div>
+                    </div>
+                    <!-- Candle 2 -->
+                    <div class="flex flex-col items-center">
+                        <div class="candle-flame w-3 h-5 bg-gradient-to-t from-yellow-500 via-orange-400 to-yellow-200 rounded-full shadow-md"></div>
+                        <div class="w-2.5 h-12 bg-gradient-to-r from-purple-300 to-purple-400 rounded-t-sm shadow"></div>
+                    </div>
+                    <!-- Candle 3 -->
+                    <div class="flex flex-col items-center">
+                        <div class="candle-flame w-3 h-5 bg-gradient-to-t from-yellow-500 via-orange-400 to-yellow-200 rounded-full shadow-md"></div>
+                        <div class="w-2.5 h-10 bg-gradient-to-r from-pink-300 to-pink-400 rounded-t-sm shadow"></div>
+                    </div>
+                </div>
+
+                <!-- Cake Top Layer -->
+                <div class="w-36 sm:w-44 h-12 bg-pink-300 rounded-t-3xl border-b-4 border-pink-400 relative shadow-inner flex items-center justify-center">
+                    <span class="text-pink-100 text-xs tracking-widest font-bold">♥ ♥ ♥</span>
+                </div>
+                <!-- Cake Middle Layer -->
+                <div class="w-44 sm:w-52 h-14 bg-amber-100 border-b-4 border-amber-200 relative shadow flex items-center justify-between px-4">
+                    <span class="text-pink-400 text-sm">🍓</span>
+                    <span class="text-pink-400 text-sm">✨</span>
+                    <span class="text-pink-400 text-sm">🍓</span>
+                </div>
+                <!-- Cake Bottom Base -->
+                <div class="w-52 sm:w-60 h-16 bg-pink-400 rounded-b-2xl relative shadow-lg flex items-center justify-center">
+                    <span class="text-white font-game text-sm tracking-wider">¡TE AMO VALEN!</span>
+                </div>
+                <!-- Plate -->
+                <div class="w-60 sm:w-72 h-4 bg-gray-200 rounded-full border-t-2 border-gray-300 shadow-md mt-1"></div>
+            </div>
+
+            <p class="text-xs text-gray-500 italic mb-6">
+                (Haz clic sobre el pastel para pedir tu deseo de cumpleaños)
+            </p>
+
+            <!-- Buttons Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4">
+                <button onclick="openLoveLetter()" class="py-3 px-6 bg-gradient-to-r from-red-500 to-pink-600 hover:from-red-600 hover:to-pink-700 text-white font-game rounded-2xl shadow-md transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-envelope-open-text text-lg"></i>
+                    <span>Carta de Amor</span>
+                </button>
+
+                <button onclick="openRewardsModal()" class="py-3 px-6 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-game rounded-2xl shadow-md transition-all duration-200 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-gift text-lg"></i>
+                    <span>Ver Mis Premios (<span id="rewards-count">5</span>)</span>
+                </button>
+            </div>
+
+            <!-- Replay Button -->
+            <button onclick="restartGame()" class="mt-6 text-xs text-pink-600 hover:text-pink-800 underline font-semibold transition">
+                <i class="fa-solid fa-rotate-right mr-1"></i> Volver a jugar el concurso
+            </button>
+        </section>
+
+    </main>
+
+    <!-- MODAL 1: LOVE LETTER -->
+    <div id="modal-letter" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="glass-card rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative transform transition-all max-h-[90vh] overflow-y-auto">
+            <button onclick="closeLoveLetter()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
+                &times;
+            </button>
+            
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-heart text-red-500 text-3xl mb-2"></i>
+                <h3 class="text-2xl font-bold font-cursive text-pink-600">Mi Querida Valentina...</h3>
+            </div>
+
+            <div class="space-y-4 text-gray-700 leading-relaxed text-sm sm:text-base font-serif italic bg-pink-50/50 p-4 sm:p-6 rounded-2xl border border-pink-100">
+                <p>
+                    ¡Feliz Cumpleaños, mi amor! 🎉🎂
+                </p>
+                <p>
+                    Creé este pequeño concurso para recordar juntos algunos de los momentos más lindos, divertidos y especiales que hemos compartido. Cada pregunta es solo una pincelada de todo lo que significas para mí.
+                </p>
+                <p>
+                    Gracias por ser mi compañera de risas, de aventuras, de conversaciones interminables y por llenar cada uno de mis días con tu luz y tu ternura. 
+                </p>
+                <p>
+                    Deseo que este nuevo año de vida venga cargado de sueños cumplidos, muchísima felicidad y de muchísimos momentos hermosos juntos. ¡Te amo con todo mi corazón!
+                </p>
+                <div class="text-right pt-2 font-bold font-cursive text-pink-600 text-lg">
+                    Con todo mi amor,<br>
+                    [Tu Nombre Aquí] ❤️
+                </div>
+            </div>
+
+            <button onclick="closeLoveLetter()" class="mt-6 w-full py-3 bg-pink-500 hover:bg-pink-600 text-white font-game rounded-xl shadow transition">
+                ¡Cerrar Carta y Celebrar! 🎉
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: REWARDS / COUPONS -->
+    <div id="modal-rewards" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4 transition-opacity duration-300">
+        <div class="glass-card rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative transform transition-all max-h-[90vh] overflow-y-auto">
+            <button onclick="closeRewardsModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 text-2xl w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition">
+                &times;
+            </button>
+
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-gifts text-purple-600 text-3xl mb-2"></i>
+                <h3 class="text-2xl font-bold font-game text-purple-700">Tus Cupones Ganados</h3>
+                <p class="text-xs text-gray-500">¡Válidos para canjear en cualquier momento!</p>
+            </div>
+
+            <div id="rewards-list" class="space-y-3 my-4">
+                <!-- Dynamically Inserted Coupons -->
+            </div>
+
+            <button onclick="closeRewardsModal()" class="w-full py-3 bg-purple-600 hover:bg-purple-700 text-white font-game rounded-xl shadow transition">
+                ¡Genial, los canjearé pronto! ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="w-full text-center text-xs text-pink-800/70 font-semibold z-10 mt-6 py-2">
+        Hecho con ❤️ especialmente para el cumpleaños de Valentina
+    </footer>
+
+    <script>
+        /* WEB AUDIO API SOUND SYNTHESIZER (No external audio files needed!) */
+        let audioEnabled = true;
+        let audioCtx = null;
+
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const soundIcon = document.getElementById('sound-icon');
+            if (audioEnabled) {
+                soundIcon.className = 'fa-solid fa-volume-high text-lg';
+            } else {
+                soundIcon.className = 'fa-solid fa-volume-xmark text-lg';
+            }
+        }
+
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                const ctx = getAudioContext();
+                const now = ctx.currentTime;
+
+                if (type === 'click') {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.08);
+                } else if (type === 'correct') {
+                    // Play a pleasant 3-note arpeggio chime
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    notes.forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(freq, now + i * 0.08);
+                        gain.gain.setValueAtTime(0.2, now + i * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.08 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + i * 0.08);
+                        osc.stop(now + i * 0.08 + 0.25);
+                    });
+                } else if (type === 'wrong') {
+                    // Play a gentle playful buzz
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(220, now);
+                    osc.frequency.setValueAtTime(180, now + 0.15);
+                    gain.gain.setValueAtTime(0.15, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'fanfare') {
+                    // Victory fanfare sequence
+                    const notes = [440, 554.37, 659.25, 880];
+                    notes.forEach((freq, i) => {
+                        const osc = ctx.createOscillator();
+                        const gain = ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(freq, now + i * 0.12);
+                        gain.gain.setValueAtTime(0.25, now + i * 0.12);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.12 + 0.4);
+                        osc.connect(gain);
+                        gain.connect(ctx.destination);
+                        osc.start(now + i * 0.12);
+                        osc.stop(now + i * 0.12 + 0.4);
+                    });
+                } else if (type === 'blow') {
+                    // Wind / blowing noise for candles
+                    const bufferSize = ctx.sampleRate * 0.5;
+                    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) {
+                        data[i] = Math.random() * 2 - 1;
+                    }
+                    const noise = ctx.createBufferSource();
+                    noise.buffer = buffer;
+                    const filter = ctx.createBiquadFilter();
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(400, now);
+                    filter.frequency.linearRampToValueAtTime(100, now + 0.5);
+                    const gain = ctx.createGain();
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(ctx.destination);
+                    noise.start(now);
+                }
+            } catch (e) {
+                console.log("Audio play error:", e);
+            }
+        }
+
+        /* GAME DATA: 5 PLACEHOLDER RELATIONSHIP QUESTIONS 
+           (¡Puedes cambiar las preguntas, respuestas y premios fácilmente aquí!) */
+        const relationshipQuestions = [
+            {
+                question: "¿En qué lugar tuvimos nuestra primera cita oficial?",
+                options: [
+                    "En una cafetería bonita tomando café ☕",
+                    "En el parque caminando y conversando 🌳",
+                    "En el cine viendo una película divertidísima 🍿",
+                    "Comiendo nuestra comida favorita 🍕"
+                ],
+                correctIndex: 0, // 0 = Primera opción, 1 = Segunda, etc.
+                reward: "🎫 Vale por: Tu postre favorito cuando tú quieras",
+                feedback: "¡Exacto! Imposible olvidar ese día perfecto."
+            },
+            {
+                question: "¿Cuál es mi detalle o manía tuya que me parece más tierna?",
+                options: [
+                    "Como arrugas la nariz cuando te ríes 🤭",
+                    "Tu forma de abrazarme fuerte de la nada 🫂",
+                    "Tus bailes improvisados cuando estás feliz 💃",
+                    "Todas las anteriores (¡obviamente!) ✨"
+                ],
+                correctIndex: 3,
+                reward: "🎫 Vale por: Un masaje relajante de 20 minutos",
+                feedback: "¡Claro que sí! Todo en ti me enamora."
+            },
+            {
+                question: "¿Qué es lo que más nos gusta hacer cuando estamos juntos un domingo?",
+                options: [
+                    "Maratonear series arropaditos 🎬",
+                    "Salir a buscar lugares nuevos para comer 🥐",
+                    "Cocinar algo rico juntos en casa 🍳",
+                    "Tener conversaciones profundas de horas 💬"
+                ],
+                correctIndex: 0,
+                reward: "🎫 Vale por: Una noche de películas escogidas 100% por ti",
+                feedback: "¡Puntos extras por ser la reina del control remoto!"
+            },
+            {
+                question: "Si tuviéramos que viajar mañana mismo, ¿a dónde iríamos?",
+                options: [
+                    "Una playa paradisíaca a tomar sol 🏖️",
+                    "Una ciudad romántica llena de luces 🏙️",
+                    "Una cabaña en las montañas con frío 🏔️",
+                    "¡A donde sea, mientras vayamos juntos! ❤️"
+                ],
+                correctIndex: 3,
+                reward: "🎫 Vale por: Un viaje/escapada de fin de semana",
+                feedback: "¡Cualquier lugar del mundo es perfecto contigo!"
+            },
+            {
+                question: "Última pregunta: ¿Quién te ama más que a nada en este universo?",
+                options: [
+                    "Yo (¡por infinito rendimiento!) 💖",
+                    "Yo (sin duda alguna) 💕",
+                    "Yo (y la respuesta es definitiva) 💘",
+                    "Todas las opciones son correctas 🥰"
+                ],
+                correctIndex: 3,
+                reward: "🎫 Vale por: Mi amor eterno + Cena romántica de Cumpleaños 🎉",
+                feedback: "¡100% Correcto! ¡Eres la persona más especial de mi vida!"
+            }
+        ];
+
+        // GAME STATE VARIABLES
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let earnedRewards = [];
+        let candlesBlown = false;
+
+        function startGame() {
+            playSound('click');
+            currentQuestionIndex = 0;
+            score = 0;
+            earnedRewards = [];
+            candlesBlown = false;
+
+            document.getElementById('screen-welcome').classList.add('hidden');
+            document.getElementById('screen-prize').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.remove('hidden');
+
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const q = relationshipQuestions[currentQuestionIndex];
+            
+            // Update UI elements
+            document.getElementById('question-badge').innerText = `Pregunta ${currentQuestionIndex + 1} de ${relationshipQuestions.length}`;
+            document.getElementById('score-counter').innerText = score;
+            document.getElementById('question-text').innerText = q.question;
+
+            // Progress Bar
+            const progressPct = ((currentQuestionIndex + 1) / relationshipQuestions.length) * 100;
+            document.getElementById('progress-bar').style.width = `${progressPct}%`;
+
+            // Reset feedback and next button
+            const feedbackEl = document.getElementById('quiz-feedback');
+            feedbackEl.classList.add('hidden');
+            feedbackEl.className = "min-h-[50px] p-3 rounded-xl text-center text-sm font-semibold transition-all duration-300 hidden";
+
+            const nextBtnContainer = document.getElementById('next-btn-container');
+            if (nextBtnContainer) {
+                nextBtnContainer.classList.add('hidden');
+            }
+
+            // Render Options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((optText, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "choice-btn w-full p-4 rounded-2xl bg-white/90 hover:bg-pink-50 border-2 border-pink-200 hover:border-pink-400 text-left font-semibold text-gray-700 flex items-center justify-between shadow-sm text-sm sm:text-base";
+                btn.onclick = () => handleAnswer(idx);
+                
+                btn.innerHTML = `
+                    <span class="flex items-center space-x-3">
+                        <span class="w-7 h-7 rounded-full bg-pink-100 text-pink-600 font-bold font-game flex items-center justify-center text-xs">
+                            ${String.fromCharCode(65 + idx)}
+                        </span>
+                        <span>${optText}</span>
+                    </span>
+                    <i class="fa-regular fa-circle text-pink-300"></i>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selectedIndex) {
+            playSound('click');
+            const q = relationshipQuestions[currentQuestionIndex];
+            const feedbackEl = document.getElementById('quiz-feedback');
+            const optionButtons = document.querySelectorAll('.choice-btn');
+
+            // Disable all buttons to prevent multiple clicks
+            optionButtons.forEach(btn => btn.disabled = true);
+
+            if (selectedIndex === q.correctIndex) {
+                // CORRECT ANSWER
+                playSound('correct');
+                score += 100;
+                document.getElementById('score-counter').innerText = score;
+                earnedRewards.push(q.reward);
+
+                // Highlight chosen button
+                optionButtons[selectedIndex].classList.remove('bg-white/90', 'border-pink-200');
+                optionButtons[selectedIndex].classList.add('bg-green-100', 'border-green-400', 'text-green-800');
+                optionButtons[selectedIndex].querySelector('i').className = 'fa-solid fa-circle-check text-green-500 text-lg';
+
+                // Confetti mini pop
+                confetti({
+                    particleCount: 25,
+                    spread: 60,
+                    origin: { y: 0.7 }
+                });
+
+                feedbackEl.innerHTML = `
+                    <p class="text-green-700"><i class="fa-solid fa-sparkles mr-1"></i> <strong>¡Correcto!</strong> ${q.feedback}</p>
+                    <p class="text-xs text-purple-600 mt-1 font-bold">🎁 Desbloqueaste: ${q.reward}</p>
+                `;
+                feedbackEl.classList.remove('hidden');
+                feedbackEl.classList.add('bg-green-50', 'border', 'border-green-200');
+
+            } else {
+                // INCORRECT ANSWER (Fun romantic second-chance vibration)
+                playSound('wrong');
+
+                optionButtons[selectedIndex].classList.remove('bg-white/90', 'border-pink-200');
+                optionButtons[selectedIndex].classList.add('bg-red-50', 'border-red-300', 'text-red-700');
+                optionButtons[selectedIndex].querySelector('i').className = 'fa-solid fa-circle-xmark text-red-400 text-lg';
+
+                // Still give the reward because we love her!
+                earnedRewards.push(q.reward);
+
+                feedbackEl.innerHTML = `
+                    <p class="text-pink-700">🤭 ¡Casi! Pero como eres la cumpleañera, ¡te damos los puntos y el premio de todos modos!</p>
+                    <p class="text-xs text-purple-600 mt-1 font-bold">🎁 Desbloqueaste: ${q.reward}</p>
+                `;
+                feedbackEl.classList.remove('hidden');
+                feedbackEl.classList.add('bg-pink-50', 'border', 'border-pink-200');
+            }
+
+            // Reveal the "Siguiente Pregunta" or "Ver Gran Premio" button
+            const nextBtnContainer = document.getElementById('next-btn-container');
+            const nextBtnText = document.getElementById('next-btn-text');
+            const nextBtnIcon = document.getElementById('next-btn-icon');
+
+            if (currentQuestionIndex < relationshipQuestions.length - 1) {
+                nextBtnText.innerText = 'Siguiente Pregunta';
+                nextBtnIcon.className = 'fa-solid fa-arrow-right';
+            } else {
+                nextBtnText.innerText = '¡Ver mi Gran Premio!';
+                nextBtnIcon.className = 'fa-solid fa-gift';
+            }
+            
+            nextBtnContainer.classList.remove('hidden');
+        }
+
+        function goToNextQuestion() {
+            playSound('click');
+            currentQuestionIndex++;
+            if (currentQuestionIndex < relationshipQuestions.length) {
+                renderQuestion();
+            } else {
+                showFinalPrizeScreen();
+            }
+        }
+
+        function showFinalPrizeScreen() {
+            playSound('fanfare');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-prize').classList.remove('hidden');
+
+            // Trigger grand celebratory confetti burst
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 }
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 }
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            })();
+
+            // Update rewards counter
+            document.getElementById('rewards-count').innerText = earnedRewards.length;
+        }
+
+        function blowCandles() {
+            if (candlesBlown) return;
+
+            playSound('blow');
+            candlesBlown = true;
+
+            // Extinguish flames
+            const flames = document.querySelectorAll('.candle-flame');
+            flames.forEach(flame => {
+                flame.classList.add('extinguished');
+            });
+
+            // Hide candle hint
+            const hint = document.getElementById('candle-hint');
+            if (hint) hint.innerText = "✨ ¡Deseo concedido! ✨";
+
+            // Big Confetti burst
+            confetti({
+                particleCount: 100,
+                spread: 100,
+                origin: { y: 0.6 }
+            });
+
+            setTimeout(() => {
+                playSound('correct');
+            }, 300);
+        }
+
+        function openLoveLetter() {
+            playSound('click');
+            document.getElementById('modal-letter').classList.remove('hidden');
+        }
+
+        function closeLoveLetter() {
+            playSound('click');
+            document.getElementById('modal-letter').classList.add('hidden');
+        }
+
+        function openRewardsModal() {
+            playSound('click');
+            const rewardsList = document.getElementById('rewards-list');
+            rewardsList.innerHTML = '';
+
+            if (earnedRewards.length === 0) {
+                // Fallback in case opened early
+                earnedRewards = relationshipQuestions.map(q => q.reward);
+            }
+
+            earnedRewards.forEach((rewardText, index) => {
+                const item = document.createElement('div');
+                item.className = "p-3 bg-gradient-to-r from-purple-50 to-pink-50 border border-pink-200 rounded-xl flex items-center space-x-3 shadow-sm";
+                item.innerHTML = `
+                    <div class="w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold text-xs shrink-0">
+                        ${index + 1}
+                    </div>
+                    <span class="text-sm font-semibold text-gray-800">${rewardText}</span>
+                `;
+                rewardsList.appendChild(item);
+            });
+
+            document.getElementById('modal-rewards').classList.remove('hidden');
+        }
+
+        function closeRewardsModal() {
+            playSound('click');
+            document.getElementById('modal-rewards').classList.add('hidden');
+        }
+
+        function restartGame() {
+            playSound('click');
+            // Reset flames
+            const flames = document.querySelectorAll('.candle-flame');
+            flames.forEach(flame => {
+                flame.classList.remove('extinguished');
+            });
+            const hint = document.getElementById('candle-hint');
+            if (hint) hint.innerText = "✨ ¡Haz clic aquí para soplar las velas! ✨";
+
+            startGame();
+        }
+
+        /* FLOATING HEARTS BACKGROUND CANVAS ANIMATION */
+        const canvas = document.getElementById('hearts-canvas');
+        const ctx = canvas.getContext('2d');
+
+        let hearts = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class Heart {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                this.x = Math.random() * canvas.width;
+                this.y = canvas.height + 20;
+                this.size = Math.random() * 15 + 10;
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.3;
+                this.color = `hsl(${Math.random() * 30 + 330}, 80%, 75%)`;
+                this.swing = Math.random() * 2;
+                this.swingSpeed = Math.random() * 0.03 + 0.01;
+            }
+
+            update() {
+                this.y -= this.speed;
+                this.x += Math.sin(this.swing) * 0.5;
+                this.swing += this.swingSpeed;
+
+                if (this.y < -20) {
+                    this.reset();
+                }
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                const topCurveHeight = this.size * 0.3;
+                ctx.moveTo(this.x, this.y + topCurveHeight);
+                // Heart shape bezier curves
+                ctx.bezierCurveTo(
+                    this.x, this.y, 
+                    this.x - this.size / 2, this.y, 
+                    this.x - this.size / 2, this.y + topCurveHeight
+                );
+                ctx.bezierCurveTo(
+                    this.x - this.size / 2, this.y + (this.size + topCurveHeight) / 2, 
+                    this.x, this.y + this.size, 
+                    this.x, this.y + this.size
+                );
+                ctx.bezierCurveTo(
+                    this.x, this.y + this.size, 
+                    this.x + this.size / 2, this.y + (this.size + topCurveHeight) / 2, 
+                    this.x + this.size / 2, this.y + topCurveHeight
+                );
+                ctx.bezierCurveTo(
+                    this.x + this.size / 2, this.y, 
+                    this.x, this.y, 
+                    this.x, this.y + topCurveHeight
+                );
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        // Initialize Floating Hearts
+        function initHearts() {
+            hearts = [];
+            const heartCount = Math.floor(window.innerWidth / 25);
+            for (let i = 0; i < heartCount; i++) {
+                const h = new Heart();
+                h.y = Math.random() * canvas.height; // Distribute initially
+                hearts.push(h);
+            }
+        }
+
+        function animateHearts() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            hearts.forEach(h => {
+                h.update();
+                h.draw();
+            });
+            requestAnimationFrame(animateHearts);
+        }
+
+        window.onload = function() {
+            initHearts();
+            animateHearts();
+        };
+    </script>
+</body>
+</html>
